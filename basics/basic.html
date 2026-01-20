@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chatbot</title>
+</head>
+
+<body>
+  <div class="js-container"></div>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    .send-button {
+      background-color: rgb(25, 135, 84);
+      color: white;
+      padding: 12px 20px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .chat-input {
+      padding: 12px 15px;
+      border-radius: 10px;
+      border-width: 1px;
+      font-size: 15px;
+      flex-grow: 1;
+    }
+
+    .chat-input-container {
+      display: flex;
+      margin-bottom: 60px;
+    }
+
+    .app-container {
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-message-user {
+      display: flex;
+      justify-content: end;
+      align-items: start;
+    }
+
+    .chat-message-robot {
+      display: flex;
+      align-items: start;
+    }
+
+    .chat-message-text {
+      background-color: rgb(238, 238, 238);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-right: 10px;
+      margin-left: 10px;
+      margin-bottom: 20px;
+      max-width: 300px;
+    }
+
+    .chat-message-profile {
+      width: 45px;
+    }
+
+    .chat-messages-container {
+      flex-grow: 1;
+      margin-top: 20px;
+      overflow: scroll;
+      scrollbar-width: none;
+    }
+  </style>
+
+  <script src="https://unpkg.com/supersimpledev/react.js"></script>
+  <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+  <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+
+  <script type="text/babel">
+    function ChatApp() {
+      const [chatMessages, setChatMessages] = React.useState([
+        { message: "Hello chatbot", image: "user.png", id: "id1" },
+        { message: "Hello! How can I help you?", image: "robot.png", id: "id2" },
+        { message: "tell me todays date", image: "user.png", id: "id3" },
+        { message: "Today is January 2", image: "robot.png", id: "id4" }
+      ]);
+
+      return (
+        <div className="app-container">
+          <div className="chat-messages-container">
+            {chatMessages.map((msg) => (
+              <MessageBubble
+                key={msg.id}
+                message={msg.message}
+                image={msg.image}
+              />
+            ))}
+          </div>
+
+          <MessageInput
+            messages={chatMessages}
+            setMessages={setChatMessages}
+          />
+        </div>
+      );
+    }
+
+    function MessageInput({ messages, setMessages }) {
+      const [inputText, setInputText] = React.useState('');
+
+      function handleInputChange(e) {
+        setInputText(e.target.value);
+      }
+
+      function handleSendMessage() {
+        const newChatMessages = [
+          ...messages,
+          {
+            message: inputText,
+            image: "user.png",
+            id: crypto.randomUUID()
+          }
+        ];
+
+        setMessages(newChatMessages);
+
+        const response = Chatbot.getResponse(inputText);
+        setMessages([
+          ...newChatMessages,
+          {
+            message: response,
+            image: "robot.png",
+            id: crypto.randomUUID()
+          }
+        ]);
+
+        setInputText('');
+      }
+
+      return (
+        <div className="chat-input-container">
+          <input
+            className="chat-input"
+            placeholder="Send a message to Chatbot"
+            onChange={handleInputChange}
+            value={inputText}
+          />
+          <button
+            className="send-button"
+            onClick={handleSendMessage}
+          >
+            Send
+          </button>
+        </div>
+      );
+    }
+
+    function MessageBubble({ message, image }) {
+      return (
+        <div
+          className={
+            image === "robot.png"
+              ? "chat-message-robot"
+              : "chat-message-user"
+          }
+        >
+          {image === "robot.png" && (
+            <img
+              className="chat-message-profile"
+              src={image}
+            />
+          )}
+
+          <div className="chat-message-text">
+            {message}
+          </div>
+
+          {image === "user.png" && (
+            <img
+              className="chat-message-profile"
+              src={image}
+            />
+          )}
+        </div>
+      );
+    }
+
+    const container = document.querySelector('.js-container');
+    ReactDOM.createRoot(container).render(<ChatApp />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Exercise</title>
+</head>
+
+<body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+
+    <script type="text/babel">
+
+        function App() {
+
+            
+            
+            return (
+                <>
+                    <PracticingInput/>
+                </>
+            );
+
+        }
+        
+        function PracticingInput(){
+            const [inputText, setInputText] = React.useState("")
+
+            function handleInputChange(e){
+                setInputText(e.target.value);
+            }
+
+            function Reset(){
+                setInputText("");
+            }
+            function Example(){
+                setInputText("Alice");
+            }
+
+            // console.log(setInputText)
+            
+            return(
+                <>
+                    <input 
+                    placeholder="Enter input"
+                    onChange={handleInputChange}
+                    value={inputText}
+                     />
+                     <button onClick={Reset}>Reset</button>
+                     <button onClick={Example}>Example</button>
+
+                     <p>hello {inputText}</p>
+                </>
+            );
+            
+        }
+        
+        
+        
+
+
+        const container = document.querySelector('.js-container');
+        ReactDOM.createRoot(container).render(<App/>);
+
+    </script>
+</body>
+
+</html>
