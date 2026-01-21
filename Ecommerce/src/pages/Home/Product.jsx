@@ -30,6 +30,7 @@ export const Product = ({ product, loadCart }) => {
             <div className="product-container">
                 <div className="product-image-container">
                     <img className="product-image"
+                        data-testid="product-image"
                         src={product.image} />
                 </div>
 
@@ -39,6 +40,7 @@ export const Product = ({ product, loadCart }) => {
 
                 <div className="product-rating-container">
                     <img className="product-rating-stars"
+                        data-testid="product-rating-stars"
                         src={`images/ratings/rating-${(product.rating.stars) * 10}.png`} />
                     <div className="product-rating-count link-primary">
                         {product.rating.count}
@@ -46,7 +48,7 @@ export const Product = ({ product, loadCart }) => {
                 </div>
 
                 <div className="product-price">
-                    ${money(product.priceCents)}
+                    {money(product.priceCents)}
                 </div>
 
                 <div className="product-quantity-container">
