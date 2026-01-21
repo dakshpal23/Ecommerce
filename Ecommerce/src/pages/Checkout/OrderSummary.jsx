@@ -14,6 +14,7 @@ export const OrderSummary = ({ cart, deliveryOptions, loadCart }) => {
 
                 {deliveryOptions.length > 0 && cart.map((cartItem) => {
                     const [updateQuantity, setUpdateQuantity] = useState(false)
+                    const [newQuantity, setNewQuantity] = useState(cartItem.quantity)
 
                     const selectedDeliveryOption = deliveryOptions
                         .find((deliveryOption) => {
@@ -27,6 +28,12 @@ export const OrderSummary = ({ cart, deliveryOptions, loadCart }) => {
 
                     const updateCartItem = () => {
                         setUpdateQuantity(true)
+                    }
+
+                    const saveQuantity = async () => {
+                        await axios.put(`http://localhost:3000/api/cart-items/${cartItem.productId}`, { quantity: parseInt(newQuantity) })
+                        setUpdateQuantity(false)
+                        await loadCart();
                     }
 
                     return (
@@ -48,14 +55,35 @@ export const OrderSummary = ({ cart, deliveryOptions, loadCart }) => {
                                     </div>
                                     <div className="product-quantity">
                                         <span>
-                                            Quantity: {updateQuantity && <input className="textbox" type="text" />}<span className="quantity-label">{cartItem.quantity}</span>
+                                            Quantity: {updateQuantity ? <input 
+                                                className="textbox" 
+                                                type="text" 
+                                                value={newQuantity}
+                                                onChange={(e) => setNewQuantity(e.target.value)}
+                                            /> : <span className="quantity-label">{cartItem.quantity}</span>}
                                         </span>
-                                        <span className="update-quantity-link link-primary" onClick={updateCartItem}>
-                                            Update
-                                        </span>
-                                        <span className="delete-quantity-link link-primary" onClick={deleteCartItem}>
-                                            Delete
-                                        </span>
+                                        {updateQuantity ? (
+                                            <>
+                                                <span className="save-quantity-link link-primary" onClick={saveQuantity}>
+                                                    Save
+                                                </span>
+                                                <span className="cancel-quantity-link link-primary" onClick={() => {
+                                                    setUpdateQuantity(false)
+                                                    setNewQuantity(cartItem.quantity)
+                                                }}>
+                                                    Cancel
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="update-quantity-link link-primary" onClick={updateCartItem}>
+                                                    Update
+                                                </span>
+                                                <span className="delete-quantity-link link-primary" onClick={deleteCartItem}>
+                                                    Delete
+                                                </span>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
 
